@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --color-gold-light: #fef08a;
+  --color-gold-base: #d4af37;
+  --color-gold-dark: #997517;
+  --color-gold-metallic: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+  --color-bg-deep: #08080a;
+  --color-bg-card: #121218;
+  --color-bg-elevated: #1a1a24;
+  --border-gold-glow: rgba(212, 175, 55, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: var(--color-bg-deep);
+  color: #f3f4f6;
+  direction: rtl;
+  text-align: right;
+  overflow-x: hidden;
+}
+
+.font-amiri {
+  font-family: 'Amiri', serif;
+}
+
+/* التمرير الذهبي المخصص */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0d12;
+}
+::-webkit-scrollbar-thumb {
+  background: #453414;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* تأثير التدرج الذهبي للنصوص */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fff2a3 0%, #d4af37 40%, #aa771c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-metallic {
+  background: var(--color-gold-metallic);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* لمعان ذهبي وبطاقات فاخرة */
+.gold-glow {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+}
+
+.gold-glow-hover:hover {
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.35);
+  border-color: rgba(212, 175, 55, 0.7);
+}
+
+.royal-card {
+  background: linear-gradient(180deg, rgba(26, 26, 36, 0.7) 0%, rgba(14, 14, 18, 0.95) 100%);
+  backdrop-filter: blur(12px);
+}
+
+/* تبويبات التصنيفات الفاخرة */
+.category-tab {
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.category-tab.active-tab {
+  background: linear-gradient(135deg, #d4af37, #b48518);
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* أزرار لوحة التحكم الجانبية */
+.admin-nav-item.active-admin-nav {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border-right: 3px solid #d4af37;
+  color: #fef08a;
+  font-weight: 700;
+}
+
+/* إشعارات التوست الفاخرة */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 380px;
+}
+
+.royal-toast {
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: rgba(18, 18, 24, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.royal-toast.success {
+  border-color: rgba(52, 211, 153, 0.5);
+}
+.royal-toast.warning {
+  border-color: rgba(251, 191, 36, 0.5);
+}
+.royal-toast.error {
+  border-color: rgba(244, 63, 94, 0.5);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* تأثير النبض الخفيف للذهب */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+  }
+}
+
+.pulse-gold {
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+/* أنماط الطباعة للفاتورة */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  #printable-invoice {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+  }
+  #printable-invoice * {
+    color: #111 !important;
+    border-color: #ddd !important;
+  }
+}
