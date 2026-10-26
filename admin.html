@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم وإدارة المخزون | قصر العطور الملكي</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            royal: {
+              gold: '#d4af37',
+              goldLight: '#fef08a',
+              goldDark: '#997517',
+              dark: '#08080a',
+              card: '#121218',
+              cardElevated: '#1a1a24'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#08080a] text-neutral-100 min-h-screen flex antialiased">
+
+  <!-- حارس تسجيل دخول المدير (Login Guard) يظهر إن لم يكن مسجل دخول كمدير -->
+  <div id="admin-login-guard" class="fixed inset-0 bg-[#08080a]/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-[#121218] border border-amber-500/50 rounded-3xl p-8 text-center shadow-2xl space-y-5">
+      <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-amber-500/10">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div>
+        <h2 class="text-2xl font-black text-gold-gradient font-amiri">لوحة إدارة قصر العطور الملكي</h2>
+        <p class="text-xs text-neutral-400 mt-1">يجب تسجيل الدخول بصلاحية المدير العام للوصول</p>
+      </div>
+
+      <div class="p-3 bg-neutral-900 border border-amber-900/50 rounded-xl text-xs text-neutral-300 text-right space-y-1">
+        <div><strong>بيانات المدير الافتراضية:</strong></div>
+        <div>• البريد: <span class="text-amber-400 font-mono">admin@royalperfumes.com</span></div>
+        <div>• كلمة المرور: <span class="text-amber-400 font-mono">admin</span></div>
+      </div>
+
+      <div class="space-y-2">
+        <button onclick="royalAdmin.adminQuickLogin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-extrabold text-sm hover:shadow-lg hover:shadow-amber-500/25 transition">
+          <i class="fas fa-crown ml-1"></i> الدخول الفوري بحساب المدير العام
+        </button>
+        <a href="index.html" class="block w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 font-semibold text-xs transition">
+          العودة للمتجر الرئيسي
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي للوحة التحكم (Admin Main Content) -->
+  <div id="admin-main-content" class="flex-1 flex min-h-screen overflow-hidden">
+    
+    <!-- الشريط الجانبي (Admin Sidebar) -->
+    <aside class="w-64 bg-[#0d0d12] border-l border-amber-950 flex flex-col justify-between hidden md:flex">
+      <div>
+        <!-- رأس الشريط الجانبي -->
+        <div class="p-5 border-b border-amber-950 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-800 p-0.5 flex items-center justify-center shadow-md">
+            <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center text-amber-400">
+              <i class="fas fa-crown text-base"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-200 text-sm font-amiri">قصر العطور</h3>
+            <span class="text-[10px] text-amber-500/80 block">لوحة إدارة المتجر</span>
+          </div>
+        </div>
+
+        <!-- روابط التنقل -->
+        <nav class="p-3 space-y-1 text-xs">
+          <a href="#" data-tab="overview" class="admin-nav-item active-admin-nav flex items-center gap-3 px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <i class="fas fa-chart-pie w-5 text-center text-amber-400"></i>
+            <span>لوحة المؤشرات العامة</span>
+          </a>
+
+          <a href="#" data-tab="products" class="admin-nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-wine-bottle w-5 text-center text-amber-400"></i>
+              <span>إدارة العطور والمنتجات</span>
+            </div>
+            <span id="stat-total-products" class="text-[10px] bg-neutral-800 px-2 py-0.5 rounded-full font-bold text-amber-300">0</span>
+          </a>
+
+          <a href="#" data-tab="inventory" class="admin-nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-boxes-stacked w-5 text-center text-amber-400"></i>
+              <span>مراقبة المخزون والتوريد</span>
+            </div>
+            <span id="stat-low-stock" class="text-[10px] bg-rose-950 text-rose-300 px-2 py-0.5 rounded-full font-bold">0</span>
+          </a>
+
+          <a href="#" data-tab="orders" class="admin-nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-receipt w-5 text-center text-amber-400"></i>
+              <span>إدارة الطلبات والفواتير</span>
+            </div>
+            <span id="stat-pending-orders-badge" class="text-[10px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-2 py-0.5 rounded-full font-bold" style="display: none;">0</span>
+          </a>
+
+          <a href="#" data-tab="customers" class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <i class="fas fa-users w-5 text-center text-amber-400"></i>
+            <span>العملاء المسجلين</span>
+          </a>
+
+          <a href="#" data-tab="coupons" class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <i class="fas fa-tags w-5 text-center text-amber-400"></i>
+            <span>كوبونات الخصم والعروض</span>
+          </a>
+
+          <a href="#" data-tab="settings" class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-neutral-300 hover:text-amber-200 hover:bg-neutral-900/60 transition">
+            <i class="fas fa-cog w-5 text-center text-amber-400"></i>
+            <span>إعدادات المتجر والنسخ</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- أسفل الشريط الجانبي -->
+      <div class="p-4 border-t border-amber-950 space-y-2">
+        <a href="index.html" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold transition">
+          <i class="fas fa-store"></i>
+          <span>الذهاب للمتجر الرئيسي</span>
+        </a>
+
+        <button onclick="authManager.logout(); window.location.reload();" class="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-neutral-900 hover:bg-rose-950 text-neutral-400 hover:text-rose-300 text-xs transition">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>تسجيل الخروج</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- منطقة العمل الرئيسية للوحة التحكم -->
+    <main class="flex-1 flex flex-col min-w-0 bg-[#08080a] overflow-y-auto">
+      
+      <!-- ترويسة اللوحة العلوية -->
+      <header class="h-16 border-b border-amber-950/80 bg-[#0c0c10]/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-4">
+          <!-- أزرار التبديل في الجوال -->
+          <div class="md:hidden flex items-center gap-2 overflow-x-auto py-1">
+            <button onclick="royalAdmin.currentTab='overview'; royalAdmin.renderCurrentTab();" class="px-2.5 py-1 bg-neutral-900 rounded-lg text-xs text-amber-300 font-bold">المؤشرات</button>
+            <button onclick="royalAdmin.currentTab='products'; royalAdmin.renderCurrentTab();" class="px-2.5 py-1 bg-neutral-900 rounded-lg text-xs text-amber-300 font-bold">العطور</button>
+            <button onclick="royalAdmin.currentTab='inventory'; royalAdmin.renderCurrentTab();" class="px-2.5 py-1 bg-neutral-900 rounded-lg text-xs text-amber-300 font-bold">المخزون</button>
+            <button onclick="royalAdmin.currentTab='orders'; royalAdmin.renderCurrentTab();" class="px-2.5 py-1 bg-neutral-900 rounded-lg text-xs text-amber-300 font-bold">الطلبات</button>
+            <a href="index.html" class="px-2.5 py-1 bg-amber-500 text-black rounded-lg text-xs font-bold">المتجر</a>
+          </div>
+
+          <h2 class="hidden md:block text-base font-bold text-amber-200">لوحة الإدارة والتحكم الملكية</h2>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="royalAdmin.openAddProductModal()" class="px-4 py-2 bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs rounded-xl hover:shadow-lg transition flex items-center gap-1.5 shadow-md">
+            <i class="fas fa-plus"></i>
+            <span>إضافة عطر جديد</span>
+          </button>
+
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs">
+            <i class="fas fa-user-shield text-amber-400"></i>
+            <span id="admin-profile-name" class="font-bold text-neutral-200">المدير العام</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- الحاوية الديناميكية للأقسام -->
+      <div class="p-4 sm:p-8 space-y-8 flex-1">
+
+        <!-- =================== 1. قسم لوحة المؤشرات (Overview) =================== -->
+        <section id="section-overview" class="admin-section space-y-8">
+          
+          <!-- بطاقات الإحصائيات الأربعة -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="p-5 rounded-2xl bg-neutral-900/90 border border-amber-900/40 relative overflow-hidden shadow-lg">
+              <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
+                <span>إجمالي مبيعات المتجر</span>
+                <i class="fas fa-wallet text-amber-400 text-lg"></i>
+              </div>
+              <div id="stat-total-sales" class="text-2xl font-black text-amber-300">0 ر.س</div>
+              <div class="text-[11px] text-emerald-400 mt-2 flex items-center gap-1">
+                <i class="fas fa-arrow-up"></i>
+                <span>تحديث فوري ومباشر</span>
+              </div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-neutral-900/90 border border-amber-900/40 relative overflow-hidden shadow-lg">
+              <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
+                <span>إجمالي عدد الطلبات</span>
+                <i class="fas fa-receipt text-amber-400 text-lg"></i>
+              </div>
+              <div id="stat-total-orders" class="text-2xl font-black text-neutral-100">0</div>
+              <div class="text-[11px] text-neutral-400 mt-2">تشمل كافة الحالات</div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-neutral-900/90 border border-amber-900/40 relative overflow-hidden shadow-lg">
+              <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
+                <span>إجمالي العطور بالمتجر</span>
+                <i class="fas fa-wine-bottle text-amber-400 text-lg"></i>
+              </div>
+              <div id="stat-total-products-overview" class="text-2xl font-black text-neutral-100">12</div>
+              <div class="text-[11px] text-amber-400 mt-2">عطور شرقية، فرنسية، نيش</div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-neutral-900/90 border border-amber-900/40 relative overflow-hidden shadow-lg">
+              <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
+                <span>تنبيهات انخفاض المخزون</span>
+                <i class="fas fa-exclamation-triangle text-rose-500 text-lg"></i>
+              </div>
+              <div id="stat-low-stock-overview" class="text-2xl font-black text-rose-400">0</div>
+              <div class="text-[11px] text-neutral-400 mt-2">عطور متبقي منها 4 قطع فأقل</div>
+            </div>
+
+          </div>
+
+          <!-- جدولين فرعيين: أحدث الطلبات ومخزون حرج -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- أحدث الطلبات -->
+            <div class="lg:col-span-7 bg-neutral-950/80 border border-amber-950 rounded-2xl p-5 shadow-lg space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-amber-200 text-sm flex items-center gap-2">
+                  <i class="fas fa-clock text-amber-400"></i>
+                  <span>أحدث طلبات الشراء الواردة</span>
+                </h3>
+                <button onclick="royalAdmin.currentTab='orders'; royalAdmin.renderCurrentTab();" class="text-xs text-amber-400 hover:underline">عرض الكل</button>
+              </div>
+
+              <div id="overview-recent-orders" class="space-y-2.5"></div>
+            </div>
+
+            <!-- عطور شارفت على النفاذ -->
+            <div class="lg:col-span-5 bg-neutral-950/80 border border-amber-950 rounded-2xl p-5 shadow-lg space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-rose-300 text-sm flex items-center gap-2">
+                  <i class="fas fa-fire text-rose-500"></i>
+                  <span>مخزون حرج يتطلب التزويد</span>
+                </h3>
+                <button onclick="royalAdmin.currentTab='inventory'; royalAdmin.renderCurrentTab();" class="text-xs text-amber-400 hover:underline">إدارة المخزون</button>
+              </div>
+
+              <div id="overview-low-stock-items" class="space-y-2.5"></div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- =================== 2. قسم إدارة المنتجات (Products) =================== -->
+        <section id="section-products" class="admin-section hidden space-y-6">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-amber-200">كتالوج العطور والمنتجات</h3>
+              <p class="text-xs text-neutral-400">عرض وتعديل وحذف العطور المعروضة في المتجر</p>
+            </div>
+            <button onclick="royalAdmin.openAddProductModal()" class="px-4 py-2 bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs rounded-xl hover:shadow-lg transition flex items-center gap-1.5">
+              <i class="fas fa-plus"></i>
+              <span>إضافة عطر جديد</span>
+            </button>
+          </div>
+
+          <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-neutral-900 border-b border-amber-950 text-neutral-400">
+                  <tr>
+                    <th class="p-3">العطر والماركة</th>
+                    <th class="p-3">التصنيف</th>
+                    <th class="p-3">السعر</th>
+                    <th class="p-3">المخزون</th>
+                    <th class="p-3">التقييم</th>
+                    <th class="p-3 text-center">الشارة</th>
+                    <th class="p-3 text-left">الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="products-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 3. قسم إدارة المخزون (Inventory) =================== -->
+        <section id="section-inventory" class="admin-section hidden space-y-6">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-amber-200">مراقبة وإدارة المخزون الفوري</h3>
+              <p class="text-xs text-neutral-400">تحديث كميات العطور المتاحة مباشرة وتزويد المنتجات بضغطة زر واحدة</p>
+            </div>
+          </div>
+
+          <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-neutral-900 border-b border-amber-950 text-neutral-400">
+                  <tr>
+                    <th class="p-3">العطر</th>
+                    <th class="p-3">التصنيف</th>
+                    <th class="p-3">السعر الحالي</th>
+                    <th class="p-3">حالة المخزون</th>
+                    <th class="p-3">تعديل الكمية الفوري</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 4. قسم إدارة الطلبات (Orders) =================== -->
+        <section id="section-orders" class="admin-section hidden space-y-6">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-amber-200">سجل الطلبات والفواتير</h3>
+              <p class="text-xs text-neutral-400">متابعة طلبات العملاء وتغيير حالات الشحن وطباعة الفواتير الملكية</p>
+            </div>
+          </div>
+
+          <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-neutral-900 border-b border-amber-950 text-neutral-400">
+                  <tr>
+                    <th class="p-3">رقم الطلب</th>
+                    <th class="p-3">العميل والجوال</th>
+                    <th class="p-3">تاريخ الطلب</th>
+                    <th class="p-3">العناصر</th>
+                    <th class="p-3">الإجمالي</th>
+                    <th class="p-3">حالة الطلب</th>
+                    <th class="p-3 text-left">الفاتورة</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 5. قسم العملاء (Customers) =================== -->
+        <section id="section-customers" class="admin-section hidden space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-amber-200">العملاء المسجلين</h3>
+            <p class="text-xs text-neutral-400">قائمة بجميع حسابات العملاء وإجمالي مشترياتهم</p>
+          </div>
+
+          <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-neutral-900 border-b border-amber-950 text-neutral-400">
+                  <tr>
+                    <th class="p-3">اسم العميل</th>
+                    <th class="p-3">البريد الإلكتروني</th>
+                    <th class="p-3">رقم الهاتف</th>
+                    <th class="p-3">المدينة</th>
+                    <th class="p-3">النوع</th>
+                    <th class="p-3">الطلبات</th>
+                    <th class="p-3">إجمالي الإنفاق</th>
+                  </tr>
+                </thead>
+                <tbody id="customers-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 6. قسم الكوبونات (Coupons) =================== -->
+        <section id="section-coupons" class="admin-section hidden space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-amber-200">أكواد الخصم والكوبونات</h3>
+            <p class="text-xs text-neutral-400">إنشاء وإدارة كوبونات الخصم الترويجية لزيادة المبيعات</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- إضافة كوبون جديد -->
+            <div class="lg:col-span-5 bg-neutral-950/90 border border-amber-950 rounded-2xl p-5 shadow-lg">
+              <h4 class="font-bold text-amber-300 text-sm mb-4">إضافة كود خصم جديد</h4>
+              <form onsubmit="royalAdmin.handleAddCoupon(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-neutral-300 font-bold mb-1">كود الكوبون * (مثال: EID25)</label>
+                  <input type="text" id="new-coupon-code" required placeholder="الكود بالأحرف الإنجليزية" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-amber-300 uppercase font-mono focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                  <label class="block text-neutral-300 font-bold mb-1">نسبة الخصم (%) *</label>
+                  <input type="number" id="new-coupon-percent" min="1" max="100" required placeholder="مثال: 15" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                  <label class="block text-neutral-300 font-bold mb-1">الحد الأدنى للإنفاق</label>
+                  <input type="number" id="new-coupon-minspend" placeholder="0" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                  <label class="block text-neutral-300 font-bold mb-1">وصف الكوبون</label>
+                  <input type="text" id="new-coupon-desc" placeholder="مثال: خصم خاص بمناسبة العيد" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs hover:shadow-lg transition">
+                  حفظ الكوبون وتفعيله
+                </button>
+              </form>
+            </div>
+
+            <!-- جدول الكوبونات المفعلة -->
+            <div class="lg:col-span-7 bg-neutral-950/90 border border-amber-950 rounded-2xl overflow-hidden shadow-lg">
+              <div class="p-4 border-b border-amber-950 font-bold text-sm text-amber-200">الكوبونات النشطة حالياً</div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-right text-xs">
+                  <thead class="bg-neutral-900 border-b border-amber-950 text-neutral-400">
+                    <tr>
+                      <th class="p-3">الكود</th>
+                      <th class="p-3">الخصم</th>
+                      <th class="p-3">الحد الأدنى</th>
+                      <th class="p-3">الوصف</th>
+                      <th class="p-3 text-left">حذف</th>
+                    </tr>
+                  </thead>
+                  <tbody id="coupons-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================== 7. قسم إعدادات المتجر والنسخ الاحتياطي (Settings) =================== -->
+        <section id="section-settings" class="admin-section hidden space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-amber-200">إعدادات المتجر والنسخ الاحتياطي</h3>
+            <p class="text-xs text-neutral-400">تخصيص بيانات المتجر، رقم الواتساب، تكاليف الشحن، وحفظ واسترجاع قاعدة البيانات</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- إعدادات المتجر العامة -->
+            <div class="lg:col-span-7 bg-neutral-950/90 border border-amber-950 rounded-2xl p-6 shadow-lg">
+              <h4 class="font-bold text-amber-300 text-sm mb-4">البيانات العامة للمتجر</h4>
+              <form onsubmit="royalAdmin.handleSettingsSubmit(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">اسم المتجر بالعربي</label>
+                    <input type="text" id="setting-name-ar" required class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">اسم المتجر بالإنجليزي</label>
+                    <input type="text" id="setting-name-en" required class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">رقم الواتساب لاستقبال الطلبات (مع كود الدولة)</label>
+                    <input type="text" id="setting-whatsapp" placeholder="مثال: 966500000000 أو 201000000000" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">رقم الهاتف الرسمي</label>
+                    <input type="text" id="setting-phone" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-neutral-300 font-bold mb-1">البريد الإلكتروني الرسمي</label>
+                  <input type="email" id="setting-email" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">تكلفة الشحن الافتراضية</label>
+                    <input type="number" id="setting-shipping" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                  <div>
+                    <label class="block text-neutral-300 font-bold mb-1">الحد الأدنى للشحن المجاني</label>
+                    <input type="number" id="setting-free-shipping" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs hover:shadow-lg transition">
+                  حفظ التعديلات
+                </button>
+              </form>
+            </div>
+
+            <!-- النسخ الاحتياطي والاستعادة -->
+            <div class="lg:col-span-5 space-y-4">
+              
+              <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl p-5 shadow-lg space-y-3 text-xs">
+                <h4 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                  <i class="fas fa-download text-amber-400"></i>
+                  <span>تصدير نسخة احتياطية من قاعدة البيانات</span>
+                </h4>
+                <p class="text-neutral-400 text-[11px] leading-relaxed">
+                  احفظ نسخة من جميع المنتجات، الطلبات، المستخدمين، والمخزون في ملف JSON على جهازك للرجوع إليها في أي وقت.
+                </p>
+                <button onclick="royalAdmin.exportData()" class="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black border border-amber-500/40 font-bold transition flex items-center justify-center gap-2">
+                  <i class="fas fa-file-export"></i>
+                  <span>تنزيل ملف النسخة الاحتياطية (JSON)</span>
+                </button>
+              </div>
+
+              <div class="bg-neutral-950/90 border border-amber-950 rounded-2xl p-5 shadow-lg space-y-3 text-xs">
+                <h4 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                  <i class="fas fa-upload text-amber-400"></i>
+                  <span>استيراد واستعادة قاعدة بيانات</span>
+                </h4>
+                <p class="text-neutral-400 text-[11px] leading-relaxed">
+                  ارفع ملف نسخة احتياطية سابق لاستعادة كامل المنتجات والطلبات فوراً.
+                </p>
+                <label class="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+                  <i class="fas fa-file-import text-amber-400"></i>
+                  <span>اختر ملف النسخة الاحتياطية (JSON)</span>
+                  <input type="file" accept=".json" onchange="royalAdmin.importData(event)" class="hidden">
+                </label>
+              </div>
+
+              <div class="bg-rose-950/20 border border-rose-900/40 rounded-2xl p-5 shadow-lg space-y-3 text-xs">
+                <h4 class="font-bold text-rose-400 text-sm flex items-center gap-2">
+                  <i class="fas fa-undo"></i>
+                  <span>إعادة تعيين البيانات النموذجية</span>
+                </h4>
+                <p class="text-neutral-400 text-[11px]">
+                  يعيد المتجر إلى حالته الملكية الافتراضية مع الـ 12 عطراً والطلبات النموذجية.
+                </p>
+                <button onclick="royalAdmin.resetAllData()" class="w-full py-2 rounded-xl bg-rose-900/40 hover:bg-rose-800 text-rose-200 font-bold transition">
+                  إعادة ضبط المصنع
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- =================== النوافذ المنبثقة (Modals) =================== -->
+
+  <!-- نافذة إضافة / تعديل عطر (Product Modal) -->
+  <div id="product-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-3xl bg-[#121218] border border-amber-500/50 rounded-3xl overflow-hidden shadow-2xl animate-slide-in max-h-[92vh] flex flex-col">
+      
+      <!-- ترويسة المودال -->
+      <div class="p-5 border-b border-amber-900/50 flex items-center justify-between bg-[#161622]">
+        <h3 id="product-modal-title" class="font-bold text-amber-200 text-base">إضافة عطر جديد</h3>
+        <button onclick="royalAdmin.closeProductModal()" class="w-8 h-8 rounded-lg bg-neutral-900 text-neutral-400 hover:text-amber-200 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- استمارة العطر -->
+      <form id="product-form" onsubmit="royalAdmin.handleProductSubmit(event)" class="p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">اسم العطر *</label>
+            <input type="text" id="perfume-name" required placeholder="مثال: سوفاج إليكسير الملكي" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">الماركة أو دار العطور *</label>
+            <input type="text" id="perfume-brand" required placeholder="مثال: Dior / Tom Ford / قصر العطور" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">التصنيف *</label>
+            <select id="perfume-category" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+              <option value="oriental">عطور شرقية ودهن عود</option>
+              <option value="niche">عطور نيش فاخرة</option>
+              <option value="men">عطور رجالية</option>
+              <option value="women">عطور نسائية</option>
+              <option value="unisex">عطور للجنسين</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">السعر الأصلي *</label>
+            <input type="number" id="perfume-price" required placeholder="مثال: 650" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">السعر المخفض (اختياري)</label>
+            <input type="number" id="perfume-discount-price" placeholder="مثال: 520" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">الكمية المتوفرة بالمخزون *</label>
+            <input type="number" id="perfume-stock" required min="0" placeholder="10" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">حجم الزجاجة</label>
+            <input type="text" id="perfume-size" placeholder="مثال: 100 مل أو تولة" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">تركيز العطر</label>
+            <input type="text" id="perfume-concentration" placeholder="مثال: Eau de Parfum / Extrait" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <!-- صورة العطر (رابط أو رفع ملف) -->
+        <div class="p-3 bg-black/50 border border-amber-950 rounded-2xl space-y-2">
+          <label class="block text-amber-200 font-bold">صورة العطر (رابط مباشر أو رفع ملف من جهازك)</label>
+          <div class="flex items-center gap-3">
+            <input type="text" id="perfume-image" placeholder="https://... رابط الصورة" class="flex-1 bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+            <label class="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl border border-neutral-600 text-neutral-200 font-bold cursor-pointer whitespace-nowrap">
+              <i class="fas fa-upload ml-1 text-amber-400"></i> رفع صورة
+              <input type="file" id="perfume-image-file" accept="image/*" class="hidden">
+            </label>
+          </div>
+          <div class="flex items-center gap-3 pt-1">
+            <img id="perfume-image-preview" src="" alt="معاينة الصورة" class="w-16 h-16 object-cover rounded-xl border border-amber-500/40 hidden">
+            <span class="text-[11px] text-neutral-500">يمكنك استخدام روابط Unsplash أو رفع صور من جهازك مباشرة.</span>
+          </div>
+        </div>
+
+        <!-- الهرم العطري -->
+        <div class="p-3 bg-black/50 border border-amber-950 rounded-2xl space-y-2.5">
+          <span class="font-bold text-amber-300 block">الهرم العطري والمكونات:</span>
+          <div>
+            <label class="block text-neutral-400 mb-1">🌿 مقدمة العطر (Top Notes):</label>
+            <input type="text" id="perfume-top-notes" placeholder="مثال: البرغموت، اللافندر، الفلفل الوردي" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-1.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-neutral-400 mb-1">🌸 قلب العطر (Heart Notes):</label>
+            <input type="text" id="perfume-heart-notes" placeholder="مثال: الورد الدمشقي، الياسمين، التوابل" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-1.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-neutral-400 mb-1">🪵 قاعدة العطر (Base Notes):</label>
+            <input type="text" id="perfume-base-notes" placeholder="مثال: العود، خشب الصندل، العنبر، الفانيلا" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-1.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">درجة الثبات</label>
+            <input type="text" id="perfume-longevity" placeholder="مثال: ثبات فائق +24 ساعة" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">درجة الفوحان</label>
+            <input type="text" id="perfume-sillage" placeholder="مثال: فوحان قوي جداً" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-amber-200 font-bold mb-1">وصف العطر وسحره</label>
+          <textarea id="perfume-description" rows="3" placeholder="وصف فخم وموجز عن العطر ومناسباته..." class="w-full bg-black/60 border border-neutral-700 rounded-xl p-3 text-neutral-100 focus:outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">شارة تسويقية (Badge)</label>
+            <input type="text" id="perfume-badge" placeholder="مثال: الأكثر طلباً / حصري" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div class="flex items-center gap-2 pt-6">
+            <input type="checkbox" id="perfume-featured" class="w-4 h-4 accent-amber-500">
+            <label for="perfume-featured" class="text-neutral-300 font-bold cursor-pointer">عطر مميز (Featured)</label>
+          </div>
+          <div class="flex items-center gap-2 pt-6">
+            <input type="checkbox" id="perfume-bestseller" class="w-4 h-4 accent-amber-500">
+            <label for="perfume-bestseller" class="text-neutral-300 font-bold cursor-pointer">الأكثر مبيعاً</label>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-black text-sm hover:shadow-lg transition">
+          حفظ العطر ونشره بالمتجر 👑
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة الفاتورة الملكية للطباعة (Invoice Modal) -->
+  <div id="invoice-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-[#121218] border border-amber-500/50 rounded-3xl overflow-hidden shadow-2xl animate-slide-in max-h-[95vh] flex flex-col">
+      <div class="p-4 border-b border-amber-900/50 flex items-center justify-between bg-[#161622] no-print">
+        <h3 class="font-bold text-amber-200 text-sm">معاينة الفاتورة الملكية</h3>
+        <div class="flex items-center gap-2">
+          <button onclick="royalAdmin.printInvoice()" class="px-3 py-1.5 rounded-lg bg-amber-500 text-black text-xs font-bold flex items-center gap-1.5 hover:bg-amber-400 transition">
+            <i class="fas fa-print"></i> طباعة الفاتورة
+          </button>
+          <button onclick="royalAdmin.closeInvoiceModal()" class="w-8 h-8 rounded-lg bg-neutral-900 text-neutral-400 hover:text-white flex items-center justify-center">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div id="invoice-content" class="overflow-y-auto p-4 flex-1"></div>
+    </div>
+  </div>
+
+  <!-- حاوية إشعارات التوست -->
+  <div id="toast-container"></div>
+
+  <!-- ملفات الجافاسكريبت -->
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

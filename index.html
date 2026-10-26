@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قصر العطور الملكي | Royal Perfumes Palace</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            royal: {
+              gold: '#d4af37',
+              goldLight: '#fef08a',
+              goldDark: '#997517',
+              dark: '#08080a',
+              card: '#121218',
+              cardElevated: '#1a1a24'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#08080a] text-neutral-100 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- شريط الإعلانات العلوي الفاخر -->
+  <div class="bg-gradient-to-r from-amber-950 via-amber-800 to-amber-950 border-b border-amber-600/30 text-amber-100 text-xs py-2 px-4 text-center font-medium shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+      <span>⚜️ خصم ملكي 10% على جميع الطلبات باستخدام كوبون <strong class="text-yellow-300 bg-black/40 px-2 py-0.5 rounded font-mono">ROYAL10</strong></span>
+      <span class="hidden md:inline text-amber-500">•</span>
+      <span class="hidden md:inline">🚚 شحن مجاني للطلبات الملكية التي تتجاوز 1,200 ج.م</span>
+      <span class="hidden md:inline text-amber-500">•</span>
+      <a href="https://wa.me/201000000000" target="_blank" class="hover:text-yellow-300 underline font-semibold flex items-center gap-1">
+        <i class="fab fa-whatsapp"></i> خدمة العملاء الفورية
+      </a>
+    </div>
+  </div>
+
+  <!-- ترويسة الموقع الرئيسية (Header & Navbar) -->
+  <header class="sticky top-0 z-40 bg-[#0c0c10]/95 backdrop-blur-md border-b border-amber-900/40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+        
+        <!-- الشعار والهوية الملكية -->
+        <a href="index.html" class="flex items-center gap-3 group">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 via-yellow-600 to-amber-800 p-0.5 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300">
+            <div class="w-full h-full bg-[#0d0d12] rounded-[14px] flex items-center justify-center">
+              <i class="fas fa-crown text-amber-400 text-xl group-hover:rotate-6 transition-transform"></i>
+            </div>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-black text-gold-metallic tracking-wide font-amiri block">قصر العطور الملكي</span>
+            <span class="text-[10px] tracking-widest uppercase text-amber-400/80 block">Royal Perfumes Palace</span>
+          </div>
+        </a>
+
+        <!-- شريط البحث السريع والحي -->
+        <div class="hidden md:flex flex-1 max-w-md mx-4">
+          <div class="relative w-full">
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="ابحث عن عطر، ماركة، نوتات عطرية (عود، عنبر، لافندر)..." 
+              class="w-full bg-neutral-900/90 border border-amber-900/50 rounded-full py-2.5 pr-11 pl-4 text-xs text-amber-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition"
+            >
+            <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 text-xs"></i>
+          </div>
+        </div>
+
+        <!-- أدوات المتجر (العملة، المفضلة، السلة، الحساب، الإدارة) -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- محول العملات التفاعلي -->
+          <div class="relative">
+            <select 
+              id="currency-select" 
+              class="bg-neutral-900 border border-amber-900/40 rounded-xl px-2.5 py-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-500 cursor-pointer"
+            >
+              <option value="SAR">🇸🇦 SAR (ر.س)</option>
+              <option value="EGP">🇪🇬 EGP (ج.م)</option>
+              <option value="AED">🇦🇪 AED (د.إ)</option>
+              <option value="KWD">🇰🇼 KWD (د.ك)</option>
+              <option value="USD">🇺🇸 USD ($)</option>
+            </select>
+          </div>
+
+          <!-- زر قائمة المفضلة -->
+          <button 
+            onclick="authManager.toggleAccountDrawer();" 
+            class="relative w-10 h-10 rounded-xl bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-300 hover:text-rose-400 hover:border-amber-500/60 transition"
+            title="قائمة المفضلة"
+          >
+            <i class="far fa-heart text-base"></i>
+            <span class="wishlist-badge absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-rose-600 text-white text-[10px] font-bold hidden items-center justify-center">0</span>
+          </button>
+
+          <!-- زر سلة المشتريات -->
+          <button 
+            onclick="royalApp.toggleCartDrawer(true)" 
+            class="relative w-10 h-10 rounded-xl bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-300 hover:text-amber-100 hover:border-amber-500/60 transition"
+            title="سلة المشتريات"
+          >
+            <i class="fas fa-shopping-bag text-base"></i>
+            <span class="cart-badge absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-gradient-to-r from-amber-600 to-yellow-500 text-black text-[10px] font-black hidden items-center justify-center shadow-md">0</span>
+          </button>
+
+          <!-- زر حساب المستخدم / تسجيل الدخول -->
+          <button 
+            onclick="authManager.toggleAccountDrawer()" 
+            class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-900 border border-amber-900/40 text-amber-200 hover:border-amber-500/60 transition text-xs font-semibold"
+          >
+            <i id="user-btn-icon" class="far fa-user text-neutral-300"></i>
+            <span id="user-btn-label">حسابي</span>
+          </button>
+
+          <!-- زر لوحة الإدارة (Admin Portal) -->
+          <a 
+            href="admin.html" 
+            id="admin-nav-btn"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/40 hover:bg-amber-500 hover:text-black text-amber-300 transition text-xs font-bold shadow-sm"
+            title="لوحة تحكم الإدارة والمخزون"
+          >
+            <i class="fas fa-sliders-h"></i>
+            <span class="hidden lg:inline">لوحة التحكم</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- حقل البحث في شاشات الجوال -->
+      <div class="md:hidden pb-3">
+        <div class="relative w-full">
+          <input 
+            type="text" 
+            oninput="document.getElementById('search-input').value = this.value; document.getElementById('search-input').dispatchEvent(new Event('input'))" 
+            placeholder="ابحث عن العطور، الماركات، النوتات..." 
+            class="w-full bg-neutral-900/90 border border-amber-900/50 rounded-xl py-2 pr-10 pl-3 text-xs text-amber-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+          >
+          <i class="fas fa-search absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-xs"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- القسم الترحيبي والبانر الفاخر (Hero Section) -->
+  <section class="relative overflow-hidden bg-gradient-to-b from-[#101017] via-[#09090c] to-[#08080a] py-16 sm:py-24 border-b border-amber-950/60">
+    <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 text-center lg:text-right space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/60 border border-amber-500/40 text-amber-300 text-xs font-bold backdrop-blur-md">
+            <i class="fas fa-certificate text-amber-400"></i>
+            <span>الدار الملكية للأصالة والفخامة الشرقية والعالمية</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-amiri text-gold-gradient leading-tight">
+            عطورٌ تخلّد حضورك، وتأسر الألباب
+          </h1>
+
+          <p class="text-neutral-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            ننتقي لك أرقى النوتات العطرية من أندر أخشاب العود الكمبودي والورود الدمشقية والمسك الصافي، لتمنحك هيبة ملكية وحضوراً لا يُمحى من الذاكرة.
+          </p>
+
+          <!-- أزرار الدعوة للإجراء (CTAs) -->
+          <div class="flex items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 flex-wrap">
+            <a 
+              href="#products-section" 
+              class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-extrabold text-sm hover:shadow-lg hover:shadow-amber-500/25 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <span>تسوق التشكيلة الملكية</span>
+              <i class="fas fa-arrow-down text-xs"></i>
+            </a>
+
+            <button 
+              onclick="window.cartManager.openWhatsAppCheckout({ notes: 'أود استشارة خبير العطور لمساعدتي في اختيار العطر المناسب' })"
+              class="px-6 py-3.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-amber-200 border border-amber-500/40 font-bold text-sm transition flex items-center gap-2"
+            >
+              <i class="fab fa-whatsapp text-emerald-400 text-base"></i>
+              <span>استشر خبير العطور</span>
+            </button>
+          </div>
+
+          <!-- ميزات الضمان الملكي -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-amber-950/80">
+            <div class="flex items-center gap-2.5 text-xs text-neutral-300">
+              <i class="fas fa-shield-alt text-amber-400 text-base"></i>
+              <span>أصلية 100% مضمونة</span>
+            </div>
+            <div class="flex items-center gap-2.5 text-xs text-neutral-300">
+              <i class="fas fa-truck-fast text-amber-400 text-base"></i>
+              <span>توصيل سريع وآمن</span>
+            </div>
+            <div class="flex items-center gap-2.5 text-xs text-neutral-300">
+              <i class="fas fa-hand-holding-dollar text-amber-400 text-base"></i>
+              <span>دفع عند الاستلام</span>
+            </div>
+            <div class="flex items-center gap-2.5 text-xs text-neutral-300">
+              <i class="fas fa-gift text-amber-400 text-base"></i>
+              <span>تغليف إهداء فاخر</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- صورة البانر ثلاثية الأبعاد -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-sm aspect-[4/5] rounded-3xl overflow-hidden p-1 bg-gradient-to-tr from-amber-500/30 via-yellow-500/60 to-amber-900/40 shadow-2xl pulse-gold">
+            <div class="w-full h-full rounded-[22px] overflow-hidden relative bg-black">
+              <img 
+                src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80" 
+                alt="عطر نيش ملكي" 
+                class="w-full h-full object-cover object-center transform hover:scale-110 transition-transform duration-700"
+              >
+              <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20"></div>
+              
+              <div class="absolute bottom-6 right-6 left-6 p-4 rounded-2xl bg-black/75 backdrop-blur-md border border-amber-500/40">
+                <span class="text-[11px] font-bold text-amber-400 uppercase tracking-widest block mb-1">عطر الموسم الحصري</span>
+                <h3 class="text-lg font-black text-amber-100">بلاك أفغانو النيش النادر</h3>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-amber-900/50">
+                  <span class="text-amber-400 font-extrabold text-sm">820 ر.س</span>
+                  <button onclick="window.cartManager.addItem('perf-003')" class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold rounded-lg transition">
+                    أضف للسلة
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- تصنيفات العطور وقائمة المنتجات (Catalog Section) -->
+  <main id="products-section" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <!-- شريط التصنيفات التفاعلية -->
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-black font-amiri text-gold-gradient">المجموعة الملكية المختارة</h2>
+        <p class="text-neutral-400 text-xs mt-1">تصفح أرقى المجموعات حسب ذوقك العطري المفضل</p>
+      </div>
+
+      <!-- أزرار التصنيفات (Category Tabs) -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 max-w-full">
+        <button data-category="all" class="category-tab active-tab px-4 py-2 rounded-xl text-xs font-bold border border-amber-900/40 whitespace-nowrap">
+          الكل (12)
+        </button>
+        <button data-category="men" class="category-tab px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900/90 text-neutral-300 hover:text-amber-200 border border-amber-900/40 whitespace-nowrap">
+          عطور رجالية
+        </button>
+        <button data-category="women" class="category-tab px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900/90 text-neutral-300 hover:text-amber-200 border border-amber-900/40 whitespace-nowrap">
+          عطور نسائية
+        </button>
+        <button data-category="oriental" class="category-tab px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900/90 text-neutral-300 hover:text-amber-200 border border-amber-900/40 whitespace-nowrap">
+          شرقي ودهن عود
+        </button>
+        <button data-category="niche" class="category-tab px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900/90 text-neutral-300 hover:text-amber-200 border border-amber-900/40 whitespace-nowrap">
+          عطور نيش فاخرة
+        </button>
+        <button data-category="unisex" class="category-tab px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-900/90 text-neutral-300 hover:text-amber-200 border border-amber-900/40 whitespace-nowrap">
+          عطور للجنسين
+        </button>
+      </div>
+    </div>
+
+    <!-- شريط أدوات الفلترة والترتيب -->
+    <div class="flex items-center justify-between flex-wrap gap-4 p-4 rounded-2xl bg-neutral-950/70 border border-amber-950 mb-8 text-xs">
+      <div class="flex items-center gap-3">
+        <span id="products-count" class="text-amber-300 font-bold">عرض 12 عطر فاخر</span>
+        <span class="text-neutral-600">|</span>
+        <label class="flex items-center gap-2 cursor-pointer select-none text-neutral-300 hover:text-amber-200">
+          <input type="checkbox" id="stock-filter-checkbox" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+          <span>المتوفر بالمخزون فقط</span>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-neutral-400">الترتيب حسب:</span>
+        <select 
+          id="sort-select" 
+          class="bg-neutral-900 border border-amber-900/50 rounded-xl px-3 py-1.5 text-xs text-amber-200 focus:outline-none focus:border-amber-500 cursor-pointer font-medium"
+        >
+          <option value="featured">المميز والموصى به</option>
+          <option value="bestseller">الأكثر طلباً ومبيعاً</option>
+          <option value="price-asc">السعر: من الأقل للأعلى</option>
+          <option value="price-desc">السعر: من الأعلى للأقل</option>
+          <option value="rating">الأعلى تقييماً</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- شبكة المنتجات (Products Grid) يتم توليدها ديناميكياً من app.js -->
+    <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- المنتجات تظهر هنا -->
+    </div>
+
+    <!-- حالة عدم وجود نتائج (Empty State) -->
+    <div id="products-empty" class="hidden text-center py-20 bg-neutral-950/40 rounded-3xl border border-amber-950">
+      <i class="fas fa-search text-5xl text-amber-500/30 mb-4"></i>
+      <h3 class="text-lg font-bold text-amber-200 mb-2">لم نعثر على عطور تطابق بحثك</h3>
+      <p class="text-xs text-neutral-400 max-w-sm mx-auto mb-4">جرب البحث بكلمات أخرى أو اختر تصنيفاً مختلفاً لاستكشاف تشكيلتنا الملكية.</p>
+      <button onclick="document.getElementById('search-input').value=''; document.querySelector('[data-category=all]').click();" class="px-5 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500 hover:text-black transition">
+        إعادة تعيين البحث
+      </button>
+    </div>
+
+  </main>
+
+  <!-- بانر عرض العود الملكي المحدود (Promo Banner) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div class="relative rounded-3xl overflow-hidden p-8 sm:p-12 bg-gradient-to-r from-amber-950 via-[#18110b] to-black border border-amber-500/40 shadow-2xl">
+      <div class="max-w-xl space-y-4">
+        <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold inline-block">
+          ⚜️ عرض خاص لعشاق العود والنيش
+        </span>
+        <h3 class="text-2xl sm:text-4xl font-black font-amiri text-gold-gradient">
+          استمتع بخصم 20% على دهن العود الطبيعي وعطور النيش
+        </h3>
+        <p class="text-neutral-300 text-xs sm:text-sm leading-relaxed">
+          استخدم كود الخصم <strong class="text-yellow-400 font-mono bg-black/60 px-2.5 py-1 rounded-lg border border-amber-500/50">OUD20</strong> عند إتمام طلبك عبر الموقع للحصول على الخصم الفوري.
+        </p>
+        <div class="pt-2">
+          <button onclick="document.querySelector('[data-category=oriental]').click(); window.location.href='#products-section';" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-extrabold text-xs transition hover:shadow-lg hover:shadow-amber-500/30">
+            تصفح قسم العود والنيش الآن
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- تذييل الصفحة (Footer) -->
+  <footer class="bg-[#070709] border-t border-amber-950 mt-16 text-neutral-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- معلومات المتجر -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-crown text-amber-400 text-lg"></i>
+            <span class="text-lg font-bold text-amber-200 font-amiri">قصر العطور الملكي</span>
+          </div>
+          <p class="text-neutral-400 leading-relaxed text-[11px]">
+            وجهتكم الأولى لأفخر العطور الملكية، دهن العود الطبيعي، وعطور النيش النادرة المختارة بعناية لتليق بأصحاب الذوق الرفيع.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <a href="https://wa.me/201000000000" target="_blank" class="w-8 h-8 rounded-lg bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-emerald-400 hover:border-emerald-500 transition"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="w-8 h-8 rounded-lg bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-400 hover:border-amber-500 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="w-8 h-8 rounded-lg bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-400 hover:border-amber-500 transition"><i class="fab fa-snapchat"></i></a>
+            <a href="#" class="w-8 h-8 rounded-lg bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-400 hover:border-amber-500 transition"><i class="fab fa-tiktok"></i></a>
+          </div>
+        </div>
+
+        <!-- روابط سريعة -->
+        <div>
+          <h4 class="text-amber-200 font-bold mb-3">التصنيفات المميزة</h4>
+          <ul class="space-y-2 text-[11px]">
+            <li><a href="#products-section" onclick="document.querySelector('[data-category=men]').click()" class="hover:text-amber-300 transition">عطور رجالية فاخرة</a></li>
+            <li><a href="#products-section" onclick="document.querySelector('[data-category=women]').click()" class="hover:text-amber-300 transition">عطور نسائية ساحرة</a></li>
+            <li><a href="#products-section" onclick="document.querySelector('[data-category=oriental]').click()" class="hover:text-amber-300 transition">دهن عود كلمنتان ومروكي</a></li>
+            <li><a href="#products-section" onclick="document.querySelector('[data-category=niche]').click()" class="hover:text-amber-300 transition">عطور النيش العالمية النادرة</a></li>
+            <li><a href="#products-section" onclick="document.querySelector('[data-category=unisex]').click()" class="hover:text-amber-300 transition">المسك الأبيض والبودرة</a></li>
+          </ul>
+        </div>
+
+        <!-- خدمة العملاء والضمان -->
+        <div>
+          <h4 class="text-amber-200 font-bold mb-3">خدمة العملاء والضمان</h4>
+          <ul class="space-y-2 text-[11px]">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> ضمان ذهبي للاسترجاع خلال 14 يوماً</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> شحن سريع لكافة المدن والمحافظات</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> دفع آمن عند الاستلام أو بالبطاقات</li>
+            <li><a href="admin.html" class="text-amber-400 hover:underline">بوابة إدارة المتجر والمخزون</a></li>
+          </ul>
+        </div>
+
+        <!-- طرق الدفع المعتمدة -->
+        <div>
+          <h4 class="text-amber-200 font-bold mb-3">وسائل الدفع المعتمدة</h4>
+          <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">الدفع كاش 💵</div>
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">مدى Mada</div>
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">فيزا / ماستر</div>
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">Apple Pay</div>
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">InstaPay</div>
+            <div class="p-2 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300">تحويل بنكي</div>
+          </div>
+          <div class="mt-4 p-2.5 rounded-xl bg-amber-950/40 border border-amber-900/40 text-[11px] text-amber-300 text-center">
+            🔒 تسوق آمن ومحمي بأعلى معايير التشفير
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-neutral-900 mt-8 pt-6 flex items-center justify-between flex-wrap gap-4 text-[11px] text-neutral-500">
+        <div>جميع الحقوق محفوظة © 2026 قصر العطور الملكي - Royal Perfumes Palace</div>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:text-neutral-400">سياسة الخصوصية</a>
+          <span>•</span>
+          <a href="#" class="hover:text-neutral-400">الشروط والأحكام</a>
+          <span>•</span>
+          <a href="admin.html" class="text-amber-400 hover:underline">لوحة التحكم</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== الأدراج والنوافذ المنبثقة (Modals & Drawers) ==================== -->
+
+  <!-- درج سلة المشتريات (Cart Drawer) -->
+  <div id="cart-drawer-overlay" onclick="royalApp.toggleCartDrawer(false)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+  <div id="cart-drawer" class="fixed top-0 bottom-0 left-0 w-full max-w-md bg-[#0e0e14] border-r border-amber-900/50 z-50 -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    
+    <!-- رأس السلة -->
+    <div class="p-4 sm:p-5 border-b border-amber-900/40 flex items-center justify-between bg-[#121218]">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-shopping-bag text-amber-400 text-lg"></i>
+        <h3 class="font-bold text-amber-100 text-base">سلة المشتريات الملكية</h3>
+      </div>
+      <button onclick="royalApp.toggleCartDrawer(false)" class="w-8 h-8 rounded-lg bg-neutral-900 text-neutral-400 hover:text-amber-200 flex items-center justify-center transition">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+
+    <!-- محتوى السلة -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-3">
+      
+      <!-- مؤشر الشحن المجاني -->
+      <div id="shipping-progress-container"></div>
+
+      <!-- عناصر السلة -->
+      <div id="cart-drawer-items" class="space-y-2.5"></div>
+
+      <!-- حالة السلة الفارغة -->
+      <div id="cart-empty-state" class="flex flex-col items-center justify-center py-16 text-center text-neutral-400">
+        <div class="w-16 h-16 rounded-full bg-neutral-900 border border-amber-900/40 flex items-center justify-center text-amber-500/40 text-2xl mb-3">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <h4 class="font-bold text-amber-200 text-sm mb-1">سلة مشترياتك فارغة</h4>
+        <p class="text-xs text-neutral-500 max-w-[200px] mb-4">اختر عطرك المفضل من تشكيلتنا الملكية وأضفه هنا</p>
+        <button onclick="royalApp.toggleCartDrawer(false); window.location.href='#products-section';" class="px-5 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500 hover:text-black transition">
+          تصفح العطور الآن
+        </button>
+      </div>
+
+    </div>
+
+    <!-- أسفل السلة (الإجمالي والكوبون وأزرار الطلب) -->
+    <div id="cart-footer" class="p-4 bg-[#121218] border-t border-amber-900/40 space-y-3">
+      
+      <!-- إدخال كوبون الخصم -->
+      <div class="flex items-center gap-2">
+        <input 
+          type="text" 
+          id="cart-coupon-input" 
+          placeholder="كود الخصم (مثال: ROYAL10)" 
+          class="flex-1 bg-black/60 border border-amber-900/50 rounded-xl px-3 py-2 text-xs text-amber-100 placeholder-neutral-500 uppercase tracking-wider focus:outline-none focus:border-amber-500"
+        >
+        <button 
+          onclick="cartManager.applyCoupon(document.getElementById('cart-coupon-input').value)" 
+          class="px-4 py-2 bg-neutral-800 hover:bg-amber-600 hover:text-black text-amber-300 rounded-xl text-xs font-bold transition"
+        >
+          تطبيق
+        </button>
+      </div>
+
+      <!-- الحسابات -->
+      <div class="space-y-1.5 text-xs text-neutral-300 pt-1">
+        <div class="flex justify-between">
+          <span>المجموع الفرعي:</span>
+          <span id="cart-subtotal-val" class="font-bold text-amber-200">0 ر.س</span>
+        </div>
+        <div id="cart-discount-row" class="justify-between text-rose-400" style="display: none;">
+          <span>الخصم المطبق:</span>
+          <span id="cart-discount-val" class="font-bold">-0 ر.س</span>
+        </div>
+        <div class="flex justify-between">
+          <span>الشحن الملكي:</span>
+          <span id="cart-shipping-val" class="font-bold text-amber-100">0 ر.س</span>
+        </div>
+        <div class="flex justify-between text-base font-black text-amber-400 border-t border-amber-900/40 pt-2 mt-1">
+          <span>المجموع الإجمالي:</span>
+          <span id="cart-total-val">0 ر.س</span>
+        </div>
+      </div>
+
+      <!-- أزرار الإجراء -->
+      <div class="space-y-2 pt-1">
+        <button 
+          onclick="royalApp.openCheckoutModal()" 
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-extrabold text-sm hover:shadow-lg hover:shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-2"
+        >
+          <i class="fas fa-lock text-xs"></i>
+          <span>إتمام الطلب الملكي والدفع</span>
+        </button>
+
+        <button 
+          onclick="cartManager.openWhatsAppCheckout()" 
+          class="w-full py-2.5 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white font-bold text-xs transition border border-emerald-400/30 flex items-center justify-center gap-2"
+        >
+          <i class="fab fa-whatsapp text-sm"></i>
+          <span>طلب محتويات السلة عبر الواتساب</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- نافذة المعاينة السريعة للعطر (Quick View Modal) -->
+  <div id="quickview-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-[#121218] border border-amber-500/50 rounded-3xl overflow-hidden shadow-2xl animate-slide-in">
+      <button onclick="royalApp.closeQuickView()" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/70 border border-amber-500/30 text-amber-200 hover:text-white flex items-center justify-center z-20">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="quickview-content"></div>
+    </div>
+  </div>
+
+  <!-- نافذة إتمام الطلب والدفع (Checkout Modal) -->
+  <div id="checkout-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-[#121218] border border-amber-500/50 rounded-3xl overflow-hidden shadow-2xl animate-slide-in max-h-[92vh] flex flex-col">
+      
+      <!-- ترويسة نافذة الدفع -->
+      <div class="p-5 border-b border-amber-900/50 flex items-center justify-between bg-[#161622]">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-shield-alt text-amber-400 text-lg"></i>
+          <h3 class="font-bold text-amber-100 text-base">إتمام الطلب والشحن الملكي</h3>
+        </div>
+        <button onclick="royalApp.closeCheckoutModal()" class="w-8 h-8 rounded-lg bg-neutral-900 text-neutral-400 hover:text-amber-200 flex items-center justify-center">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+
+      <!-- استمارة بيانات الشحن -->
+      <form onsubmit="royalApp.handleCheckoutSubmit(event)" class="p-6 overflow-y-auto space-y-4 flex-1 text-xs">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">الاسم الكامل *</label>
+            <input type="text" id="checkout-name" required placeholder="مثال: تركي بن عبدالرحمن" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">رقم الجوال / الواتساب *</label>
+            <input type="tel" id="checkout-phone" required placeholder="مثال: 0501234567" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">المدينة *</label>
+            <input type="text" id="checkout-city" required placeholder="مثال: الرياض / دبي / القاهرة" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">البريد الإلكتروني (اختياري للإشعار بالفاتورة)</label>
+            <input type="email" id="checkout-email" placeholder="example@domain.com" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-amber-200 font-bold mb-1">العنوان بالتفصيل *</label>
+          <input type="text" id="checkout-address" required placeholder="اسم الحي، الشارع، رقم المبنى أو الفيلا" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2.5 text-neutral-100 focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div>
+          <label class="block text-amber-200 font-bold mb-1">ملاحظات التوصيل أو كارت الإهداء (اختياري)</label>
+          <textarea id="checkout-notes" rows="2" placeholder="اكتب أي تعليمات خاصة للتوصيل أو نص كارت الإهداء..." class="w-full bg-black/60 border border-neutral-700 rounded-xl p-3 text-neutral-100 focus:outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <!-- طرق الدفع -->
+        <div>
+          <label class="block text-amber-200 font-bold mb-2">طريقة الدفع المفضلة *</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-black/50 border border-amber-900/60 cursor-pointer hover:border-amber-500 transition">
+              <input type="radio" name="paymentMethod" value="cod" checked class="accent-amber-500">
+              <div>
+                <div class="font-bold text-amber-100">الدفع عند الاستلام</div>
+                <div class="text-[10px] text-neutral-400">كاش عند وصول المندوب</div>
+              </div>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-black/50 border border-amber-900/60 cursor-pointer hover:border-amber-500 transition">
+              <input type="radio" name="paymentMethod" value="card" class="accent-amber-500">
+              <div>
+                <div class="font-bold text-amber-100">بطاقة مدى / فيزا</div>
+                <div class="text-[10px] text-neutral-400">دفع إلكتروني آمن</div>
+              </div>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-black/50 border border-amber-900/60 cursor-pointer hover:border-amber-500 transition">
+              <input type="radio" name="paymentMethod" value="bank" class="accent-amber-500">
+              <div>
+                <div class="font-bold text-amber-100">تحويل بنكي / إنستاباي</div>
+                <div class="text-[10px] text-neutral-400">إرسال إيصال التحويل</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- ملخص الطلب داخل المودال -->
+        <div class="bg-black/50 border border-amber-950 rounded-2xl p-4 space-y-2">
+          <h4 class="font-bold text-amber-300 mb-2">ملخص المشتريات:</h4>
+          <div id="checkout-summary-items" class="max-h-28 overflow-y-auto space-y-1"></div>
+          <div class="pt-2 border-t border-neutral-800 space-y-1">
+            <div class="flex justify-between text-neutral-400"><span>المجموع الفرعي:</span><span id="checkout-subtotal"></span></div>
+            <div class="flex justify-between text-rose-400"><span>الخصم:</span><span id="checkout-discount"></span></div>
+            <div class="flex justify-between text-neutral-400"><span>تكلفة الشحن:</span><span id="checkout-shipping"></span></div>
+            <div class="flex justify-between text-sm font-bold text-amber-400 border-t border-neutral-800 pt-1.5 mt-1"><span>المجموع الكلي:</span><span id="checkout-total"></span></div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-black text-sm hover:shadow-lg hover:shadow-amber-500/25 transition">
+          تأكيد الطلب الآن 👑
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة نجاح الطلب والفاتورة (Order Success Modal) -->
+  <div id="order-success-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#121218] border border-amber-500/60 rounded-3xl p-6 text-center shadow-2xl animate-slide-in space-y-4">
+      <div class="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 text-3xl flex items-center justify-center mx-auto">
+        <i class="fas fa-check"></i>
+      </div>
+
+      <h3 class="text-2xl font-black text-gold-gradient font-amiri">تم استلام طلبك بنجاح!</h3>
+      <p class="text-xs text-neutral-300 leading-relaxed">
+        شكراً لتسوقك من قصر العطور الملكي يا <strong id="success-order-name" class="text-amber-200"></strong>. رقم طلبك هو:
+      </p>
+
+      <div class="p-3 bg-black/60 border border-amber-900/60 rounded-xl">
+        <span id="success-order-id" class="text-xl font-mono font-bold text-amber-400 tracking-wider"></span>
+        <div class="text-xs text-neutral-400 mt-1">الإجمالي: <span id="success-order-total" class="text-amber-200 font-bold"></span></div>
+      </div>
+
+      <p class="text-[11px] text-neutral-400">
+        سيتم تجهيز طلبك وشحنه فوراً، يمكنك تأكيد الطلب مباشرة عبر الواتساب مع خدمة العملاء لسرعة المعالجة.
+      </p>
+
+      <div class="space-y-2 pt-2">
+        <button id="success-whatsapp-btn" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+          <i class="fab fa-whatsapp text-sm"></i>
+          <span>تأكيد الطلب ومتابعة الشحنة بالواتساب</span>
+        </button>
+        <button onclick="royalApp.closeOrderConfirmation()" class="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 font-bold text-xs transition">
+          متابعة التسوق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- درج حساب العميل (Account Drawer) -->
+  <div id="account-drawer-overlay" onclick="authManager.toggleAccountDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+  <div id="account-drawer" class="fixed top-0 bottom-0 right-0 w-full max-w-md bg-[#0e0e14] border-l border-amber-900/50 z-50 translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    
+    <!-- رأس درج الحساب -->
+    <div class="p-5 border-b border-amber-900/40 flex items-center justify-between bg-[#121218]">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center font-bold">
+          <i class="fas fa-user"></i>
+        </div>
+        <div>
+          <h4 id="account-drawer-name" class="font-bold text-amber-100 text-sm">عميل قصر العطور</h4>
+          <span id="account-drawer-role-badge" class="text-[11px]"></span>
+        </div>
+      </div>
+      <button onclick="authManager.toggleAccountDrawer()" class="w-8 h-8 rounded-lg bg-neutral-900 text-neutral-400 hover:text-amber-200 flex items-center justify-center">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+
+    <!-- محتوى الحساب -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-5">
+      
+      <!-- رابط الإدارة السريع إذا كان مديراً -->
+      <a href="admin.html" id="account-drawer-admin-link" class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 hover:bg-amber-500/20 transition flex items-center justify-between text-amber-300 text-xs font-bold" style="display: none;">
+        <span><i class="fas fa-crown ml-1.5"></i> الدخول إلى لوحة إدارة المتجر والمخزون</span>
+        <i class="fas fa-arrow-left"></i>
+      </a>
+
+      <!-- بيانات الحساب الأساسية -->
+      <div class="p-3.5 rounded-xl bg-neutral-900/80 border border-neutral-800 text-xs space-y-1">
+        <div class="text-neutral-400">البريد الإلكتروني: <span id="account-drawer-email" class="text-neutral-200"></span></div>
+      </div>
+
+      <!-- تبويب المفضلة -->
+      <div>
+        <h4 class="text-xs font-bold text-amber-300 mb-2.5 flex items-center gap-1.5">
+          <i class="fas fa-heart text-rose-500"></i> قائمة العطور المفضلة:
+        </h4>
+        <div id="account-wishlist-list" class="space-y-2"></div>
+      </div>
+
+      <!-- تبويب طلباتي السابقة -->
+      <div>
+        <h4 class="text-xs font-bold text-amber-300 mb-2.5 flex items-center gap-1.5">
+          <i class="fas fa-box text-amber-400"></i> سجل طلباتي:
+        </h4>
+        <div id="account-orders-list"></div>
+      </div>
+
+    </div>
+
+    <!-- أسفل الدرج (تسجيل الخروج) -->
+    <div class="p-4 bg-[#121218] border-t border-amber-900/40">
+      <button onclick="authManager.logout()" class="w-full py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-900/50 font-bold text-xs transition flex items-center justify-center gap-2">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>تسجيل الخروج من الحساب</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- نافذة تسجيل الدخول / إنشاء حساب (Auth Modal) -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-[#121218] border border-amber-500/50 rounded-3xl overflow-hidden shadow-2xl animate-slide-in">
+      <button onclick="authManager.closeAuthModal()" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-black/60 text-neutral-400 hover:text-white flex items-center justify-center">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+
+      <!-- تبويبات تسجيل الدخول / إنشاء حساب -->
+      <div class="flex border-b border-amber-900/50 bg-[#161622] pt-4 px-4">
+        <button id="tab-btn-login" onclick="authManager.switchAuthTab('login')" class="flex-1 py-2.5 text-center font-bold text-amber-400 border-b-2 border-amber-500 transition text-xs">
+          تسجيل الدخول
+        </button>
+        <button id="tab-btn-register" onclick="authManager.switchAuthTab('register')" class="flex-1 py-2.5 text-center font-medium text-neutral-400 border-b-2 border-transparent hover:text-amber-200 transition text-xs">
+          إنشاء حساب ملكي
+        </button>
+      </div>
+
+      <div class="p-6">
+        <!-- استمارة تسجيل الدخول -->
+        <form id="form-login" onsubmit="event.preventDefault(); authManager.login(document.getElementById('login-email').value, document.getElementById('login-pass').value);" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">البريد الإلكتروني</label>
+            <input type="email" id="login-email" required placeholder="name@domain.com" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">كلمة المرور</label>
+            <input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs transition hover:shadow-lg">
+            دخول
+          </button>
+
+          <!-- زر تجريبي سريع للمدير -->
+          <div class="pt-2 border-t border-neutral-800">
+            <button type="button" onclick="authManager.quickAdminLogin()" class="w-full py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-[11px] font-bold transition flex items-center justify-center gap-1.5">
+              <i class="fas fa-crown"></i>
+              <span>تسجيل دخول سريع كمدير المتجر (تجربة فورية)</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- استمارة إنشاء حساب -->
+        <form id="form-register" onsubmit="event.preventDefault(); authManager.register({ name: document.getElementById('reg-name').value, email: document.getElementById('reg-email').value, phone: document.getElementById('reg-phone').value, password: document.getElementById('reg-pass').value, city: document.getElementById('reg-city').value, address: document.getElementById('reg-address').value });" class="space-y-3 text-xs hidden">
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">الاسم الكامل *</label>
+            <input type="text" id="reg-name" required placeholder="الاسم" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-amber-200 font-bold mb-1">البريد الإلكتروني *</label>
+              <input type="email" id="reg-email" required placeholder="name@domain.com" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-amber-200 font-bold mb-1">رقم الجوال *</label>
+              <input type="tel" id="reg-phone" required placeholder="0500000000" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-amber-200 font-bold mb-1">المدينة</label>
+              <input type="text" id="reg-city" placeholder="الرياض" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-amber-200 font-bold mb-1">كلمة المرور *</label>
+              <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-amber-200 font-bold mb-1">العنوان</label>
+            <input type="text" id="reg-address" placeholder="الحي والشارع" class="w-full bg-black/60 border border-neutral-700 rounded-xl px-3 py-2 text-neutral-100 focus:outline-none focus:border-amber-500">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-black font-bold text-xs transition">
+            إنشاء الحساب الملكي
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- حاوية إشعارات التوست -->
+  <div id="toast-container"></div>
+
+  <!-- ملفات الجافاسكريبت بالترتيب الصحيح -->
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
